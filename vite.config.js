@@ -16,7 +16,7 @@ export default defineConfig(({ command }) => ({
     target: 'esnext'
   },
   optimizeDeps: {
-    exclude: ['@dimforge/rapier3d']
+    exclude: ['@dimforge/rapier3d-compat']
   },
   server: {
     port: 3000,

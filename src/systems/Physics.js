@@ -1,3 +1,5 @@
+import RAPIER from '@dimforge/rapier3d-compat'
+
 /**
  * Physics - Rapier physics world wrapper
  */
@@ -10,8 +12,8 @@ export class Physics {
   }
 
   async init() {
-    // Dynamically import Rapier to properly load the WASM module
-    const RAPIER = await import('@dimforge/rapier3d')
+    // Initialize the WASM module (rapier3d-compat has proper init())
+    await RAPIER.init()
     this.rapier = RAPIER
 
     // Create physics world with gravity
