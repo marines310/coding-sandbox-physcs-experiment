@@ -2,10 +2,10 @@ import { defineConfig } from 'vite'
 import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   root: '.',
   publicDir: 'public',
-  base: '/coding-sandbox-physcs-experiment/',  // GitHub Pages base path
+  base: command === 'build' ? '/coding-sandbox-physcs-experiment/' : '/',  // Only use base path for production
   plugins: [
     wasm(),
     topLevelAwait()
@@ -22,4 +22,4 @@ export default defineConfig({
     port: 3000,
     open: true
   }
-})
+}))
