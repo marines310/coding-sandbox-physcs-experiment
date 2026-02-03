@@ -12,9 +12,8 @@ export class Physics {
   }
 
   async init() {
-    // Initialize Rapier (loads WASM)
-    // Must call init() to load the WASM module
-    await RAPIER.init()
+    // With vite-plugin-wasm, the RAPIER import is already initialized
+    // We just need to use it directly
     this.rapier = RAPIER
 
     // Create physics world with gravity
