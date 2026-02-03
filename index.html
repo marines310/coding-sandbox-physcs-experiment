@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Portfolio</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <!-- Loading Screen -->
+  <div id="loading">
+    <div class="loading-content">
+      <h1>Loading...</h1>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Overlay -->
+  <div id="ui">
+    <!-- Speedometer -->
+    <div id="speedometer">
+      <div class="speed-value">0</div>
+      <div class="speed-label">MPH</div>
+    </div>
+
+    <!-- Controls hint -->
+    <div id="controls-hint">
+      <p>WASD or Arrow Keys to drive</p>
+      <p>SHIFT to boost</p>
+      <p>SPACE to brake</p>
+    </div>
+
+    <!-- Zone content panels -->
+    <div id="zone-panel" class="hidden">
+      <div class="panel-content">
+        <h2 id="zone-title"></h2>
+        <div id="zone-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimap -->
+  <div id="minimap">
+    <canvas id="minimap-canvas"></canvas>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
