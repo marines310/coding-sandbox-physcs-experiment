@@ -13,7 +13,9 @@ export class Physics {
 
   async init() {
     // Initialize Rapier (loads WASM)
-    this.rapier = await RAPIER
+    // Must call init() to load the WASM module
+    await RAPIER.init()
+    this.rapier = RAPIER
 
     // Create physics world with gravity
     const gravity = { x: 0, y: -9.81, z: 0 }
