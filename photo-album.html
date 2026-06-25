@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brandon's Family Photo Album</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #fdf6ed;
+      --brown:    #7b5e3a;
+      --gold:     #c9962e;
+      --rose:     #e8a598;
+      --sage:     #8aad8a;
+      --shadow:   rgba(80, 50, 20, 0.18);
+      --text:     #3d2b1a;
+      --light:    #fff8f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── COVER ──────────────────────────────────────── */
+    #cover {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(201,150,46,.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(138,173,138,.20) 0%, transparent 55%),
+        linear-gradient(160deg, #fdf2e0 0%, #f9ead5 50%, #fceee2 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    /* decorative corner vines */
+    #cover::before, #cover::after {
+      content: '';
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background-image:
+        radial-gradient(circle 4px at 50% 50%, var(--sage) 100%, transparent 100%),
+        radial-gradient(circle 3px at 20% 80%, var(--rose) 100%, transparent 100%),
+        radial-gradient(circle 5px at 80% 20%, var(--gold) 100%, transparent 100%);
+      background-repeat: no-repeat;
+      background-size: 8px 8px, 6px 6px, 10px 10px;
+      opacity: .5;
+    }
+    #cover::before { top: -10px; left: -10px; }
+    #cover::after  { bottom: -10px; right: -10px; transform: rotate(180deg); }
+
+    .cover-frame {
+      border: 4px double var(--gold);
+      border-radius: 4px;
+      padding: 3.5rem 4rem;
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(4px);
+      max-width: 640px;
+      width: 100%;
+      box-shadow: 0 8px 40px var(--shadow);
+      position: relative;
+    }
+
+    .cover-frame::before {
+      content: '✦';
+      font-size: 1.6rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: .5rem;
+      letter-spacing: .6em;
+    }
+
+    .cover-title {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-style: italic;
+      color: var(--brown);
+      line-height: 1.15;
+      margin-bottom: .6rem;
+    }
+
+    .cover-subtitle {
+      font-size: 1rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.8rem;
+    }
+
+    .cover-heart {
+      font-size: 3.2rem;
+      line-height: 1;
+      margin: 1rem 0;
+      filter: drop-shadow(0 2px 4px rgba(200,80,80,.25));
+    }
+
+    .cover-dedication {
+      font-size: 1.05rem;
+      color: #6b4c30;
+      font-style: italic;
+      line-height: 1.7;
+      margin-top: 1.5rem;
+    }
+
+    .scroll-cta {
+      margin-top: 2.5rem;
+      display: inline-block;
+      padding: .65rem 2rem;
+      border: 2px solid var(--gold);
+      border-radius: 30px;
+      color: var(--brown);
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      font-size: .85rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.6);
+      transition: background .25s, color .25s;
+    }
+    .scroll-cta:hover { background: var(--gold); color: #fff; }
+
+    /* decorative divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem auto;
+      max-width: 300px;
+      color: var(--gold);
+      font-size: 1.2rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold);
+      opacity: .6;
+    }
+
+    /* ── ALBUM BODY ─────────────────────────────────── */
+    #album {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .chapter {
+      margin-bottom: 4rem;
+    }
+
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+      padding-bottom: .8rem;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .chapter-icon { font-size: 2rem; }
+
+    .chapter-title {
+      font-size: 1.8rem;
+      font-style: italic;
+      color: var(--brown);
+    }
+
+    .chapter-year {
+      margin-left: auto;
+      font-family: Arial, sans-serif;
+      font-size: .85rem;
+      letter-spacing: .15em;
+      color: var(--gold);
+      background: rgba(201,150,46,.12);
+      padding: .3rem .9rem;
+      border-radius: 20px;
+    }
+
+    /* ── PHOTO GRID ─────────────────────────────────── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .photo-card {
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 0 4px 16px var(--shadow), 0 1px 3px rgba(0,0,0,.08);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .22s ease, box-shadow .22s ease;
+      position: relative;
+    }
+    .photo-card:hover {
+      transform: translateY(-5px) rotate(.5deg);
+      box-shadow: 0 12px 32px var(--shadow);
+    }
+    .photo-card:nth-child(even):hover { transform: translateY(-5px) rotate(-.5deg); }
+
+    /* polaroid padding */
+    .photo-card-inner {
+      padding: .75rem .75rem .4rem;
+    }
+
+    .photo-placeholder {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* unique pastel colour per card via nth-child */
+    .photo-card:nth-child(6n+1) .photo-placeholder { background: linear-gradient(135deg,#fde8d5,#f9c9a8); }
+    .photo-card:nth-child(6n+2) .photo-placeholder { background: linear-gradient(135deg,#d5e8f9,#a8cff0); }
+    .photo-card:nth-child(6n+3) .photo-placeholder { background: linear-gradient(135deg,#d5f9e8,#a8f0c8); }
+    .photo-card:nth-child(6n+4) .photo-placeholder { background: linear-gradient(135deg,#f9d5f0,#f0a8e8); }
+    .photo-card:nth-child(6n+5) .photo-placeholder { background: linear-gradient(135deg,#f9f5d5,#f0e8a8); }
+    .photo-card:nth-child(6n+6) .photo-placeholder { background: linear-gradient(135deg,#e8d5f9,#c8a8f0); }
+
+    .photo-placeholder .emoji {
+      font-size: 3.5rem;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.12));
+      user-select: none;
+    }
+
+    .photo-placeholder .photo-label {
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      font-family: Arial, sans-serif;
+      font-size: .62rem;
+      color: rgba(80,50,20,.5);
+      font-style: italic;
+    }
+
+    .photo-caption {
+      margin-top: .5rem;
+      font-size: .82rem;
+      color: #6b4c30;
+      text-align: center;
+      font-style: italic;
+      line-height: 1.4;
+      padding: .25rem 0 .4rem;
+    }
+
+    /* featured / wide card */
+    .photo-card.wide {
+      grid-column: span 2;
+    }
+    .photo-card.wide .photo-placeholder { aspect-ratio: 16/7; }
+
+    @media (max-width: 520px) {
+      .photo-card.wide { grid-column: span 1; }
+      .photo-card.wide .photo-placeholder { aspect-ratio: 4/3; }
+    }
+
+    /* ── LIGHTBOX ────────────────────────────────────── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30,15,5,.88);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      backdrop-filter: blur(6px);
+    }
+    #lightbox.open { display: flex; }
+
+    .lb-box {
+      background: #fff;
+      border-radius: 4px;
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 80px rgba(0,0,0,.6);
+      position: relative;
+      animation: lbIn .3s ease;
+    }
+    @keyframes lbIn {
+      from { opacity: 0; transform: scale(.88); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .lb-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+    }
+
+    .lb-info {
+      padding: 1.2rem 1.5rem 1.5rem;
+      border-top: 1px solid #f0e0d0;
+    }
+
+    .lb-caption {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--brown);
+      margin-bottom: .4rem;
+    }
+
+    .lb-chapter {
+      font-family: Arial, sans-serif;
+      font-size: .75rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .lb-close {
+      position: absolute;
+      top: .8rem;
+      right: .9rem;
+      background: rgba(0,0,0,.45);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .lb-close:hover { background: rgba(0,0,0,.7); }
+
+    .lb-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.85);
+      border: none;
+      border-radius: 50%;
+      width: 2.4rem;
+      height: 2.4rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brown);
+      transition: background .2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .lb-nav:hover { background: #fff; }
+    .lb-prev { left: -1.2rem; }
+    .lb-next { right: -1.2rem; }
+
+    /* ── FOOTER ─────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem 3rem;
+      background: linear-gradient(to top, #f5e6d0, var(--cream));
+      font-style: italic;
+      color: #9b7550;
+      font-size: .95rem;
+    }
+    footer .hearts { font-size: 1.4rem; letter-spacing: .3em; display: block; margin-top: .5rem; }
+
+    /* ── NAV STRIP ───────────────────────────────────── */
+    #nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(253,246,237,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(201,150,46,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: .6rem 1rem;
+      flex-wrap: wrap;
+    }
+
+    #nav a {
+      font-family: Arial, sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--brown);
+      text-decoration: none;
+      padding: .35rem .8rem;
+      border-radius: 20px;
+      transition: background .2s, color .2s;
+    }
+    #nav a:hover { background: var(--gold); color: #fff; }
+
+    #nav .nav-title {
+      font-style: italic;
+      font-family: Georgia, serif;
+      font-size: .95rem;
+      color: var(--brown);
+      margin-right: .5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ COVER ═══════════════════════ -->
+<section id="cover">
+  <div class="cover-frame">
+    <div class="cover-subtitle">A Family Keepsake</div>
+    <h1 class="cover-title">Brandon's<br>Family Photo Album</h1>
+    <div class="divider">✦</div>
+    <div class="cover-heart">💛</div>
+    <p class="cover-dedication">
+      Every picture tells a story,<br>
+      but the best ones are the ones we lived together.<br>
+      <em>— With all our love</em>
+    </p>
+    <a href="#album" class="scroll-cta">Open Album ↓</a>
+  </div>
+</section>
+
+<!-- ═══════════════════ NAV ══════════════════════════ -->
+<nav id="nav">
+  <span class="nav-title">Brandon's Album</span>
+  <a href="#baby">Baby Years</a>
+  <a href="#toddler">Toddler Days</a>
+  <a href="#growing">Growing Up</a>
+  <a href="#milestones">Milestones</a>
+  <a href="#family">Family</a>
+  <a href="#adventures">Adventures</a>
+</nav>
+
+<!-- ═══════════════════ ALBUM ════════════════════════ -->
+<main id="album">
+
+  <!-- Chapter 1: Baby Years -->
+  <section class="chapter" id="baby">
+    <div class="chapter-header">
+      <span class="chapter-icon">🍼</span>
+      <h2 class="chapter-title">Baby Years</h2>
+      <span class="chapter-year">Year 1 – 2</span>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-card wide" data-caption="Brandon's very first day — the most beautiful surprise." data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">👶</span><span class="photo-label">Day 1</span></div>
+          <p class="photo-caption">Welcome to the world, little one</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="First smile — we melted instantly." data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">😊</span><span class="photo-label">3 months</span></div>
+          <p class="photo-caption">First smile</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Bath time fun — so many bubbles!" data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🛁</span><span class="photo-label">4 months</span></div>
+          <p class="photo-caption">Splashy bath time</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Snuggles with Grandma. Pure love." data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🤱</span><span class="photo-label">5 months</span></div>
+          <p class="photo-caption">Grandma's little treasure</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="First solid foods — not entirely a fan yet!" data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🥣</span><span class="photo-label">6 months</span></div>
+          <p class="photo-caption">First taste of real food</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Sitting up all by himself — what a big boy!" data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🧸</span><span class="photo-label">7 months</span></div>
+          <p class="photo-caption">Sitting up proud</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Crawling at lightning speed — watch out world!" data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🏃</span><span class="photo-label">9 months</span></div>
+          <p class="photo-caption">On the move!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="First steps — the whole family cheered." data-chapter="Baby Years">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">👣</span><span class="photo-label">11 months</span></div>
+          <p class="photo-caption">First wobbly steps</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 2: Toddler Days -->
+  <section class="chapter" id="toddler">
+    <div class="chapter-header">
+      <span class="chapter-icon">🎨</span>
+      <h2 class="chapter-title">Toddler Days</h2>
+      <span class="chapter-year">Year 2 – 4</span>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-card" data-caption="First birthday cake — Brandon dove in face-first!" data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎂</span><span class="photo-label">Year 1</span></div>
+          <p class="photo-caption">Happy 1st Birthday!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Painting masterpieces — mostly on himself." data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🖌️</span><span class="photo-label">18 months</span></div>
+          <p class="photo-caption">Little artist at work</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Playground adventures every sunny afternoon." data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🛝</span><span class="photo-label">2 years</span></div>
+          <p class="photo-caption">King of the playground</p>
+        </div>
+      </div>
+      <div class="photo-card wide" data-caption="That Halloween costume he insisted on — he was SO proud." data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎃</span><span class="photo-label">Halloween</span></div>
+          <p class="photo-caption">Trick or treat!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Sand castle engineering — a future architect?" data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🏖️</span><span class="photo-label">Summer</span></div>
+          <p class="photo-caption">Beach day builder</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Snuggle Sunday mornings — our favourite tradition." data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">☀️</span><span class="photo-label">Sundays</span></div>
+          <p class="photo-caption">Lazy Sunday snuggles</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="2nd birthday — dinosaurs were the theme, obviously." data-chapter="Toddler Days">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🦕</span><span class="photo-label">Year 2</span></div>
+          <p class="photo-caption">ROAR — Happy 2nd!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 3: Growing Up -->
+  <section class="chapter" id="growing">
+    <div class="chapter-header">
+      <span class="chapter-icon">🌱</span>
+      <h2 class="chapter-title">Growing Up</h2>
+      <span class="chapter-year">Year 4 – 7</span>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-card" data-caption="First day of preschool — brave as can be." data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎒</span><span class="photo-label">Preschool</span></div>
+          <p class="photo-caption">First day jitters</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Learning to ride a bike — only two tumbles!" data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🚲</span><span class="photo-label">Age 5</span></div>
+          <p class="photo-caption">Two wheels, no training wheels!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Soccer season — scored his first goal and ran laps!" data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">⚽</span><span class="photo-label">Age 6</span></div>
+          <p class="photo-caption">Goal!!!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Reading corner — discovered books and never looked back." data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">📚</span><span class="photo-label">Age 6</span></div>
+          <p class="photo-caption">Bookworm Brandon</p>
+        </div>
+      </div>
+      <div class="photo-card wide" data-caption="The whole family on our favourite hiking trail." data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🌲</span><span class="photo-label">Family hike</span></div>
+          <p class="photo-caption">Trail blazers</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Science fair project — he explained it to everyone." data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🔬</span><span class="photo-label">Age 7</span></div>
+          <p class="photo-caption">Future scientist</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Building LEGO all afternoon — total focus mode." data-chapter="Growing Up">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🧱</span><span class="photo-label">Rainy day</span></div>
+          <p class="photo-caption">Master builder</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 4: Milestones -->
+  <section class="chapter" id="milestones">
+    <div class="chapter-header">
+      <span class="chapter-icon">🏆</span>
+      <h2 class="chapter-title">Milestones</h2>
+      <span class="chapter-year">Big Moments</span>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-card wide" data-caption="Kindergarten graduation — the proudest moment." data-chapter="Milestones">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎓</span><span class="photo-label">Graduation</span></div>
+          <p class="photo-caption">Kindergarten graduate!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Lost his first tooth — tooth fairy was very busy." data-chapter="Milestones">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🦷</span><span class="photo-label">Age 6</span></div>
+          <p class="photo-caption">First lost tooth</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Swimming lessons — finally put his face in!" data-chapter="Milestones">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🏊</span><span class="photo-label">Summer</span></div>
+          <p class="photo-caption">Made a splash!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Reading his very first full book all by himself." data-chapter="Milestones">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">📖</span><span class="photo-label">Age 6</span></div>
+          <p class="photo-caption">I read it myself!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="First time cooking — helped make pancakes on his birthday." data-chapter="Milestones">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🥞</span><span class="photo-label">Birthday</span></div>
+          <p class="photo-caption">Chef Brandon</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Award at school — worked so hard for this one." data-chapter="Milestones">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🥇</span><span class="photo-label">School</span></div>
+          <p class="photo-caption">You earned it, buddy!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 5: Family Portraits -->
+  <section class="chapter" id="family">
+    <div class="chapter-header">
+      <span class="chapter-icon">🏠</span>
+      <h2 class="chapter-title">Family Portraits</h2>
+      <span class="chapter-year">Together</span>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-card wide" data-caption="The whole family — our greatest treasure." data-chapter="Family">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">👨‍👩‍👦</span><span class="photo-label">Family portrait</span></div>
+          <p class="photo-caption">Us — complete</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Matching pyjamas on Christmas morning — tradition!" data-chapter="Family">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎄</span><span class="photo-label">Christmas</span></div>
+          <p class="photo-caption">Christmas morning magic</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Thanksgiving with the whole family — so much to be grateful for." data-chapter="Family">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🦃</span><span class="photo-label">Thanksgiving</span></div>
+          <p class="photo-caption">Grateful hearts</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Father-son fishing trip — patient as ever." data-chapter="Family">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎣</span><span class="photo-label">Weekend trip</span></div>
+          <p class="photo-caption">Dad & Brandon's catch</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Baking cookies with Mom — and eating most of the dough." data-chapter="Family">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🍪</span><span class="photo-label">Kitchen fun</span></div>
+          <p class="photo-caption">Mom's little helper</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Sunday board game nights — Brandon wins more than we admit." data-chapter="Family">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🎲</span><span class="photo-label">Game night</span></div>
+          <p class="photo-caption">Game night champion</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 6: Adventures -->
+  <section class="chapter" id="adventures">
+    <div class="chapter-header">
+      <span class="chapter-icon">✈️</span>
+      <h2 class="chapter-title">Adventures</h2>
+      <span class="chapter-year">Exploring the World</span>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-card wide" data-caption="Our big family vacation — the one Brandon still talks about." data-chapter="Adventures">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🗺️</span><span class="photo-label">Vacation</span></div>
+          <p class="photo-caption">The big trip!</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="First plane ride — nose pressed to the window the whole flight." data-chapter="Adventures">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">✈️</span><span class="photo-label">First flight</span></div>
+          <p class="photo-caption">Up in the clouds</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Day at the aquarium — sharks were the absolute favourite." data-chapter="Adventures">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🦈</span><span class="photo-label">Aquarium</span></div>
+          <p class="photo-caption">Shark obsession begins</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Camping under the stars — s'mores every night, no exceptions." data-chapter="Adventures">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">⛺</span><span class="photo-label">Camping</span></div>
+          <p class="photo-caption">S'mores by the fire</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Zoo day — spent an hour at the elephants alone." data-chapter="Adventures">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🐘</span><span class="photo-label">Zoo trip</span></div>
+          <p class="photo-caption">Elephant encounter</p>
+        </div>
+      </div>
+      <div class="photo-card" data-caption="Mountain view at sunrise — we woke early just for this." data-chapter="Adventures">
+        <div class="photo-card-inner">
+          <div class="photo-placeholder"><span class="emoji">🏔️</span><span class="photo-label">Sunrise hike</span></div>
+          <p class="photo-caption">Worth every step</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════ FOOTER ════════════════════════ -->
+<footer>
+  <p>Made with love, for Brandon — our greatest adventure.</p>
+  <span class="hearts">💛 💙 💚</span>
+</footer>
+
+<!-- ═══════════════════ LIGHTBOX ══════════════════════ -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lb-box">
+    <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous">‹</button>
+    <button class="lb-nav lb-next" id="lb-next" aria-label="Next">›</button>
+    <div class="lb-image" id="lb-image"></div>
+    <div class="lb-info">
+      <p class="lb-caption" id="lb-caption"></p>
+      <p class="lb-chapter" id="lb-chapter"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Collect all photo cards
+  const cards = Array.from(document.querySelectorAll('.photo-card'));
+  let current = 0;
+
+  function openLightbox(index) {
+    current = index;
+    renderLightbox();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderLightbox() {
+    const card = cards[current];
+    const emoji = card.querySelector('.emoji').textContent;
+    const caption = card.dataset.caption || card.querySelector('.photo-caption').textContent;
+    const chapter = card.dataset.chapter || '';
+    const bg = getComputedStyle(card.querySelector('.photo-placeholder')).background;
+
+    const lbImage = document.getElementById('lb-image');
+    lbImage.style.background = bg;
+    lbImage.textContent = emoji;
+
+    document.getElementById('lb-caption').textContent = caption;
+    document.getElementById('lb-chapter').textContent = chapter.toUpperCase();
+  }
+
+  cards.forEach((card, i) => {
+    card.addEventListener('click', () => openLightbox(i));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLightbox(i); });
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', card.querySelector('.photo-caption').textContent);
+  });
+
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev').addEventListener('click', () => {
+    current = (current - 1 + cards.length) % cards.length;
+    renderLightbox();
+  });
+  document.getElementById('lb-next').addEventListener('click', () => {
+    current = (current + 1) % cards.length;
+    renderLightbox();
+  });
+
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+
+  document.addEventListener('keydown', e => {
+    const lb = document.getElementById('lightbox');
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') { current = (current - 1 + cards.length) % cards.length; renderLightbox(); }
+    if (e.key === 'ArrowRight') { current = (current + 1) % cards.length; renderLightbox(); }
+  });
+</script>
+</body>
+</html>
