@@ -31,9 +31,9 @@ export class World {
     ctx.font = 'bold 72px Arial'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText("MIKE'S CODING SANDBOX", canvas.width / 2, canvas.height / 3)
+    ctx.fillText("MIKE SUKHYUNG LEE", canvas.width / 2, canvas.height / 3)
     ctx.font = 'bold 56px Arial'
-    ctx.fillText('PHYSICS EXPERIMENT', canvas.width / 2, (canvas.height / 3) * 2)
+    ctx.fillText('DRIVE TO EXPLORE', canvas.width / 2, (canvas.height / 3) * 2)
 
     // Create texture from canvas
     const texture = new THREE.CanvasTexture(canvas)
@@ -121,10 +121,11 @@ export class World {
 
     // Road segments (connecting center to zones)
     const roadConfigs = [
-      { start: { x: 0, z: 0 }, end: { x: 0, z: -20 }, width: 4 },   // To About
-      { start: { x: 0, z: 0 }, end: { x: 30, z: 0 }, width: 4 },    // To Projects
-      { start: { x: 0, z: 0 }, end: { x: -30, z: 0 }, width: 4 },   // To Skills
-      { start: { x: 0, z: 0 }, end: { x: 0, z: 30 }, width: 4 },    // To Contact
+      { start: { x: 0, z: 0 }, end: { x: 0, z: -20 }, width: 4 },    // To About
+      { start: { x: 0, z: 0 }, end: { x: 30, z: 0 }, width: 4 },     // To Experience
+      { start: { x: 0, z: 0 }, end: { x: -30, z: 0 }, width: 4 },    // To Skills
+      { start: { x: 0, z: 0 }, end: { x: 0, z: 30 }, width: 4 },     // To Contact
+      { start: { x: 30, z: 0 }, end: { x: 30, z: -25 }, width: 4 },  // To Blog (branches off Experience road)
     ]
 
     for (const road of roadConfigs) {

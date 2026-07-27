@@ -121,7 +121,12 @@ export class ZoneManager {
   }
 
   createZones() {
-    // Define your portfolio sections here!
+    // --- Edit these to update your site's content ---
+    const BLOG_URL = 'https://your-blog-url.com' // TODO: replace with your real blog/Substack/Medium URL
+    const EMAIL = 'skhylee0416@gmail.com'
+    const LINKEDIN_URL = 'https://www.linkedin.com/in/mikeshlee'
+    const GITHUB_URL = 'https://github.com/marines310'
+
     const zoneConfigs = [
       {
         id: 'about',
@@ -131,11 +136,13 @@ export class ZoneManager {
         title: 'ABOUT',
         color: 0x4facfe,
         content: {
-          title: 'About Me',
+          title: "'Mike' Sukhyung Lee, PMP",
           body: `
-            <p>Welcome to my interactive portfolio!</p>
-            <p>I'm a developer passionate about creating unique web experiences.</p>
-            <p>Drive around to explore my work and learn more about what I do.</p>
+            <p><strong>Product &amp; Venture Strategy Leader</strong> — Financial Services, AI</p>
+            <p>New Business Building · GTM · 0→1 Initiatives · Partnerships · Global Expansion</p>
+            <p>San Francisco, CA</p>
+            <p>AI product, project management, and corporate innovation leader with 10+ years of experience building new ventures, digital products, and operating models across financial services, AI, e-commerce, healthcare, defense, and corporate venture environments.</p>
+            <p>Currently leading project management standards and deputy operations for Hanwha AI Center, supporting AI initiatives across Hanwha's financial subsidiaries.</p>
           `
         }
       },
@@ -144,15 +151,17 @@ export class ZoneManager {
         x: 30,
         z: 0,
         radius: 10,
-        title: 'PROJECTS',
+        title: 'EXPERIENCE',
         color: 0x00f2fe,
         content: {
-          title: 'My Projects',
+          title: 'Ventures & Experience',
           body: `
             <ul>
-              <li><strong>Project 1</strong> - Description here</li>
-              <li><strong>Project 2</strong> - Description here</li>
-              <li><strong>Project 3</strong> - Description here</li>
+              <li><strong>Head of PMO, Hanwha AI Center</strong> (2025–Present) — Leading New Product Development practice; deputy for operations overseeing a $20M budget; scaled to 6–10 projects/year targeting an $800M market (4x throughput).</li>
+              <li><strong>Interim COO, Hanwha AI Center</strong> (Jan–Jun 2025) — Stood up a new joint AI R&D center across Hanwha's financial subsidiaries; grew the management team 4x; oversaw a $12M annual budget.</li>
+              <li><strong>Head of Ops &amp; PMO, Hanwha Life Digital Lab (DREAMPLUS SF)</strong> (2019–2024) — Founding member; developed new business opportunities in healthcare, cyber, investments, and mobility; bridged SF and Korea HQ.</li>
+              <li><strong>DREAMPLUS Alliance</strong> — Built a network of 13 accelerators and VCs across 12 nations to help startups expand into new markets.</li>
+              <li><strong>Republic of Korea Air Force</strong> — First Lieutenant, Command Staff &amp; Crisis Action Group (2010–2013).</li>
             </ul>
           `
         }
@@ -165,14 +174,31 @@ export class ZoneManager {
         title: 'SKILLS',
         color: 0xa855f7,
         content: {
-          title: 'Skills & Tech',
+          title: 'Skills & Certifications',
           body: `
             <ul>
-              <li>JavaScript / TypeScript</li>
-              <li>React / Vue / Three.js</li>
-              <li>Node.js / Python</li>
-              <li>WebGL / Shaders</li>
+              <li>Agile Project Management &amp; Administration</li>
+              <li>Project Management Professional (PMP)®</li>
+              <li>Professional Scrum Master™ I (PSM I)</li>
+              <li>Generative AI &amp; Prompt Engineering for Project Managers</li>
+              <li>0→1 Venture Building, GTM, Partnerships, Global Expansion</li>
+              <li>Bilingual — Korean &amp; English (native/bilingual)</li>
             </ul>
+          `
+        }
+      },
+      {
+        id: 'blog',
+        x: 30,
+        z: -25,
+        radius: 10,
+        title: 'BLOG',
+        color: 0xfbbf24,
+        content: {
+          title: 'Writing',
+          body: `
+            <p>Notes on AI product strategy, venture building, and lessons from launching innovation centers.</p>
+            <p><a href="${BLOG_URL}" target="_blank" rel="noopener">Read the blog →</a></p>
           `
         }
       },
@@ -187,9 +213,9 @@ export class ZoneManager {
           title: 'Get In Touch',
           body: `
             <p>I'd love to hear from you!</p>
-            <p><a href="mailto:your@email.com">your@email.com</a></p>
-            <p><a href="https://github.com/yourusername" target="_blank">GitHub</a></p>
-            <p><a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn</a></p>
+            <p><a href="mailto:${EMAIL}">${EMAIL}</a></p>
+            <p><a href="${LINKEDIN_URL}" target="_blank" rel="noopener">LinkedIn</a></p>
+            <p><a href="${GITHUB_URL}" target="_blank" rel="noopener">GitHub</a></p>
           `
         }
       }
